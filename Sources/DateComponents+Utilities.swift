@@ -33,23 +33,29 @@ extension DateComponents {
     /// Returns the Int-bearing Calendar.Component members
     /// that make up the date
     public var members: Set<Calendar.Component> {
+        func validate(_ value: Int?) -> Bool {
+            guard let value = value, value != Int.max, value != Int.min
+                else { return false }
+            return true
+        }
+        
         var components: Set<Calendar.Component> = []
-        if era != nil { components.insert(.era) }
-        if year != nil { components.insert(.year) }
-        if month != nil { components.insert(.month) }
-        if day != nil { components.insert(.day) }
-        if hour != nil { components.insert(.hour) }
-        if minute != nil { components.insert(.minute) }
-        if second != nil { components.insert(.second) }
-        if weekday != nil { components.insert(.weekday) }
-        if weekdayOrdinal != nil { components.insert(.weekdayOrdinal) }
-        if quarter != nil { components.insert(.quarter) }
-        if weekOfMonth != nil { components.insert(.weekOfMonth) }
-        if weekOfYear != nil { components.insert(.weekOfYear) }
-        if yearForWeekOfYear != nil { components.insert(.yearForWeekOfYear) }
-        if nanosecond != nil { components.insert(.nanosecond) }
-        // if calendar != nil { set.insert(.calendar) }
-        // if timeZone != nil { set.insert(.timeZone) }
+        if validate(era) { components.insert(.era) }
+        if validate(year) { components.insert(.year) }
+        if validate(month) { components.insert(.month) }
+        if validate(day) { components.insert(.day) }
+        if validate(hour) { components.insert(.hour) }
+        if validate(minute) { components.insert(.minute) }
+        if validate(second) { components.insert(.second) }
+        if validate(weekday) { components.insert(.weekday) }
+        if validate(weekdayOrdinal) { components.insert(.weekdayOrdinal) }
+        if validate(quarter) { components.insert(.quarter) }
+        if validate(weekOfMonth) { components.insert(.weekOfMonth) }
+        if validate(weekOfYear) { components.insert(.weekOfYear) }
+        if validate(yearForWeekOfYear) { components.insert(.yearForWeekOfYear) }
+        if validate(nanosecond) { components.insert(.nanosecond) }
+        // if validate(calendar) { set.insert(.calendar) }
+        // if validate(timeZone) { set.insert(.timeZone) }
         return components
     }
 }
