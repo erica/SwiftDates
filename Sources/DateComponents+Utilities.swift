@@ -29,33 +29,34 @@ extension DateComponents {
 }
 
 // Members
+
 extension DateComponents {
     /// Returns the Int-bearing Calendar.Component members
     /// that make up the date
     public var members: Set<Calendar.Component> {
         
         // See bug https://bugs.swift.org/browse/SR-2671
-        func validate(_ value: Int?) -> Bool {
+        func validateMember(_ value: Int?) -> Bool {
             guard let value = value, value != Int.max, value != Int.min
                 else { return false }
             return true
         }
         
         var components: Set<Calendar.Component> = []
-        if validate(era) { components.insert(.era) }
-        if validate(year) { components.insert(.year) }
-        if validate(month) { components.insert(.month) }
-        if validate(day) { components.insert(.day) }
-        if validate(hour) { components.insert(.hour) }
-        if validate(minute) { components.insert(.minute) }
-        if validate(second) { components.insert(.second) }
-        if validate(weekday) { components.insert(.weekday) }
-        if validate(weekdayOrdinal) { components.insert(.weekdayOrdinal) }
-        if validate(quarter) { components.insert(.quarter) }
-        if validate(weekOfMonth) { components.insert(.weekOfMonth) }
-        if validate(weekOfYear) { components.insert(.weekOfYear) }
-        if validate(yearForWeekOfYear) { components.insert(.yearForWeekOfYear) }
-        if validate(nanosecond) { components.insert(.nanosecond) }
+        if validateMember(era) { components.insert(.era) }
+        if validateMember(year) { components.insert(.year) }
+        if validateMember(month) { components.insert(.month) }
+        if validateMember(day) { components.insert(.day) }
+        if validateMember(hour) { components.insert(.hour) }
+        if validateMember(minute) { components.insert(.minute) }
+        if validateMember(second) { components.insert(.second) }
+        if validateMember(weekday) { components.insert(.weekday) }
+        if validateMember(weekdayOrdinal) { components.insert(.weekdayOrdinal) }
+        if validateMember(quarter) { components.insert(.quarter) }
+        if validateMember(weekOfMonth) { components.insert(.weekOfMonth) }
+        if validateMember(weekOfYear) { components.insert(.weekOfYear) }
+        if validateMember(yearForWeekOfYear) { components.insert(.yearForWeekOfYear) }
+        if validateMember(nanosecond) { components.insert(.nanosecond) }
         // if validate(calendar) { set.insert(.calendar) }
         // if validate(timeZone) { set.insert(.timeZone) }
         return components
