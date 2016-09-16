@@ -34,22 +34,22 @@ extension DateComponents {
     /// that make up the date
     public var members: Set<Calendar.Component> {
         var components: Set<Calendar.Component> = []
-        if let _ = era { components.insert(.era) }
-        if let _ = year { components.insert(.year) }
-        if let _ = month { components.insert(.month) }
-        if let _ = day { components.insert(.day) }
-        if let _ = hour { components.insert(.hour) }
-        if let _ = minute { components.insert(.minute) }
-        if let _ = second { components.insert(.second) }
-        if let _ = weekday { components.insert(.weekday) }
-        if let _ = weekdayOrdinal { components.insert(.weekdayOrdinal) }
-        if let _ = quarter { components.insert(.quarter) }
-        if let _ = weekOfMonth { components.insert(.weekOfMonth) }
-        if let _ = weekOfYear { components.insert(.weekOfYear) }
-        if let _ = yearForWeekOfYear { components.insert(.yearForWeekOfYear) }
-        if let _ = nanosecond { components.insert(.nanosecond) }
-        // if let calendar = calendar { set.insert(.calendar) }
-        // if let timeZone = timeZone { set.insert(.timeZone) }
+        if era != nil { components.insert(.era) }
+        if year != nil { components.insert(.year) }
+        if month != nil { components.insert(.month) }
+        if day != nil { components.insert(.day) }
+        if hour != nil { components.insert(.hour) }
+        if minute != nil { components.insert(.minute) }
+        if second != nil { components.insert(.second) }
+        if weekday != nil { components.insert(.weekday) }
+        if weekdayOrdinal != nil { components.insert(.weekdayOrdinal) }
+        if quarter != nil { components.insert(.quarter) }
+        if weekOfMonth != nil { components.insert(.weekOfMonth) }
+        if weekOfYear != nil { components.insert(.weekOfYear) }
+        if yearForWeekOfYear != nil { components.insert(.yearForWeekOfYear) }
+        if nanosecond != nil { components.insert(.nanosecond) }
+        // if calendar != nil { set.insert(.calendar) }
+        // if timeZone != nil { set.insert(.timeZone) }
         return components
     }
 }
