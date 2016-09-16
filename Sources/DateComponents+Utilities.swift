@@ -35,6 +35,8 @@ extension DateComponents {
     public var members: Set<Calendar.Component> {
         
         // See bug https://bugs.swift.org/browse/SR-2671
+        // Error workaround where instead of returning nil
+        // the values return Int.max
         func validateMember(_ value: Int?) -> Bool {
             guard let value = value, value != Int.max, value != Int.min
                 else { return false }
@@ -68,6 +70,8 @@ extension DateComponents {
     public var trimmed: DateComponents {
         var copy = DateComponents()
         for component in members {
+            // Error workaround where instead of returning nil
+            // the values return Int.max
             guard let value = value(for: component),
                 value != Int.max, value != Int.min
                 else { continue }
