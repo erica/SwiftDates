@@ -8,38 +8,16 @@ extension Date {
     public var interval: TimeInterval { return self.timeIntervalSinceReferenceDate }
     
     /// Returns common shared calendar, user's preferred calendar
-    public static var sharedCalendar = NSCalendar.autoupdatingCurrent
-}
-
-// Subscripting
-extension DateComponents {
-    /// Adds date component subscripting
-    public subscript(component: Calendar.Component) -> Int? {
-        switch component {
-        case .era: return self.era
-        case .year: return self.year
-        case .month: return self.month
-        case .day: return self.day
-        case .hour: return self.hour
-        case .minute: return self.minute
-        case .second: return self.second
-        case .weekday: return self.weekday
-        case .weekdayOrdinal: return self.weekdayOrdinal
-        case .quarter: return self.quarter
-        case .weekOfMonth: return self.weekOfMonth
-        case .weekOfYear: return self.weekOfYear
-        case .yearForWeekOfYear: return self.yearForWeekOfYear
-        case .nanosecond: return self.nanosecond
-        // case .calendar: return self.calendar
-        // case .timeZone: return self.timeZone
-        default: return nil
-        }
-    }
+    /// This calendar tracks changes to user’s preferred calendar identifier
+    /// unlike `current`.
+    public static var sharedCalendar = Calendar.autoupdatingCurrent
 }
 
 // Date component retrieval
 // Some of these are entirely pointless but I have included all components
 public extension Date {
+    /// Returns the current time
+    public var now: Date { return Date() }
     /// Returns instance's year component
     public var year: Int { return Date.sharedCalendar.component(.year, from: self) }
     /// Returns instance's month component
@@ -166,12 +144,28 @@ public extension Int {
 // Components
 public extension Date {
     /// Returns set of common date components
-    public static var dateComponents: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute, .second]
+    public static var commonComponents: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute, .second]
+    
     /// Returns set of exhaustive date components
     public static var allComponents: Set<Calendar.Component> = [.era, .year, .month, .day, .hour, .minute, .second, .weekday, .weekdayOrdinal, .quarter, .weekOfMonth, .weekOfYear, .yearForWeekOfYear, .nanosecond, .calendar, .timeZone]
     
+    /// Returns set of MDY components
+    var dateComponents: DateComponents {
+        return Date.sharedCalendar.dateComponents([.month, .day, .year], from: self)
+    }
+    
+    /// Returns set of HMS components
+    var timeComponents: DateComponents {
+        return Date.sharedCalendar.dateComponents([.hour, .minute, .second], from: self)
+    }
+    
+    /// Returns set of MDYHMS components
+    var dateAndTimeComponents: DateComponents {
+        return Date.sharedCalendar.dateComponents([.month, .day, .year, .hour, .minute, .second], from: self)
+    }
+    
     /// Extracts common date components for date
-    public var components: DateComponents { return Date.sharedCalendar.dateComponents(Date.dateComponents, from: self) }
+    public var components: DateComponents { return Date.sharedCalendar.dateComponents(Date.commonComponents, from: self) }
     /// Extracts all date components for date
     public var allComponents: DateComponents { return Date.sharedCalendar.dateComponents(Date.allComponents, from: self) }
     
@@ -201,8 +195,8 @@ public extension Date {
         case .weekOfYear: newComponent = DateComponents(weekOfYear: count)
         case .yearForWeekOfYear: newComponent = DateComponents(yearForWeekOfYear: count)
         case .nanosecond: newComponent = DateComponents(nanosecond: count)
-        // These items complete the component vocabulary but cannot be used in this way
-        // case .calendar: newComponent = DateComponents(calendar: count)
+            // These items complete the component vocabulary but cannot be used in this way
+            // case .calendar: newComponent = DateComponents(calendar: count)
         // case .timeZone: newComponent = DateComponents(timeZone: count)
         default: break
         }
@@ -212,39 +206,24 @@ public extension Date {
     }
 }
 
-// Alternative offset approach that constructs date components for offset duty
-// I find this more verbose, less readable, less functional but your mileage may vary
-extension DateComponents {
-    /// Returns components populated by n years
-    public static func years(_ count: Int) -> DateComponents { return DateComponents(year: count) }
-    /// Returns components populated by n months
-    public static func months(_ count: Int) -> DateComponents { return DateComponents(month: count) }
-    /// Returns components populated by n days
-    public static func days(_ count: Int) -> DateComponents { return DateComponents(day: count) }
-    /// Returns components populated by n hours
-    public static func hours(_ count: Int) -> DateComponents { return DateComponents(hour: count) }
-    /// Returns components populated by n minutes
-    public static func minutes(_ count: Int) -> DateComponents { return DateComponents(minute: count) }
-    /// Returns components populated by n seconds
-    public static func seconds(_ count: Int) -> DateComponents { return DateComponents(second: count) }
-    /// Returns components populated by n nanoseconds
-    public static func nanoseconds(_ count: Int) -> DateComponents { return DateComponents(nanosecond: count) }
-}
-
-/// Performs calendar math using date components as alternative
-/// to `offset(_: Calendar.Component, _: Int)`
-/// e.g.
-/// ```swift
-/// print((Date() + DateComponents.days(3) + DateComponents.hours(1)).fullString)
-/// ```
-public func +(lhs: Date, rhs: DateComponents) -> Date {
-    return Date.sharedCalendar.date(byAdding: rhs, to: lhs)! // yes force unwrap. sue me.
+// Math
+extension Date {
+    /// Performs calendar math using date components as alternative
+    /// to `offset(_: Calendar.Component, _: Int)`
+    /// e.g.
+    /// ```swift
+    /// print((Date() + DateComponents.days(3) + DateComponents.hours(1)).fullString)
+    /// ```
+    static public func +(lhs: Date, rhs: DateComponents) -> Date {
+        return Date.sharedCalendar.date(byAdding: rhs, to: lhs)! // yes force unwrap. sue me.
+    }
 }
 
 // Date characteristics
 extension Date {
     /// Returns true if date falls before current date
     public var isPast: Bool { return self < Date() }
+    
     /// Returns true if date falls after current date
     public var isFuture: Bool { return self > Date() }
     
@@ -262,6 +241,7 @@ public extension Date {
     static public func interval(_ date1: Date, _ date2: Date) -> TimeInterval {
         return date2.interval - date1.interval
     }
+    
     /// Returns a time interval between the instance and another date
     public func interval(to date: Date) -> TimeInterval {
         return Date.interval(self, date)
