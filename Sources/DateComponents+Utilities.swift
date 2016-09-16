@@ -29,7 +29,6 @@ extension DateComponents {
 }
 
 // Members
-
 extension DateComponents {
     /// Returns the Int-bearing Calendar.Component members
     /// that make up the date
@@ -69,7 +68,9 @@ extension DateComponents {
     public var trimmed: DateComponents {
         var copy = DateComponents()
         for component in members {
-            guard let value = value(for: component) else { continue }
+            guard let value = value(for: component),
+                value != Int.max, value != Int.min
+                else { continue }
             if value != 0 { copy.setValue(value, for: component) }
         }
         return copy
