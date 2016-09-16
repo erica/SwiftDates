@@ -33,6 +33,7 @@ extension DateComponents {
     /// Returns the Int-bearing Calendar.Component members
     /// that make up the date
     public var members: Set<Calendar.Component> {
+        
         // See bug https://bugs.swift.org/browse/SR-2671
         func validate(_ value: Int?) -> Bool {
             guard let value = value, value != Int.max, value != Int.min
