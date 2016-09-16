@@ -128,6 +128,18 @@ extension DateComponents {
     public enum PresentationStyle { case standard, relative, approximate }
     
     /// Returns a string representation of the date components
+    /// ```
+    /// let dc = DateComponents(minute: 7, second: 5)
+    /// print(dc.description(remaining: true, approximate: true)) // About 7 minutes, 5 seconds remaining
+    /// print(dc.description(style: .approximate)) // About 7 minutes from now
+    /// print(dc.description(style: .relative)) // 7 minutes, 5 seconds from now
+    /// print(dc.description(style: .standard)) // 7 minutes, 5 seconds
+    /// let units: [DateComponentsFormatter.UnitsStyle] = [.positional, .abbreviated, .short, .full, .spellOut]
+    /// // 7:05, 7m 5s, 7 min, 5 sec, 7 minutes, 5 seconds, seven minutes, five seconds
+    /// for unit in units {
+    ///     print(dc.description(units: unit, style: .standard))
+    /// }
+    /// // print(dc.description(units: .brief, style: .standard)) // 10.12 and later
     public func description(
         units: DateComponentsFormatter.UnitsStyle = .full,
         remaining: Bool = false,
@@ -155,15 +167,15 @@ extension DateComponents {
         if style == .approximate {
             let ti = abs(self.timeInterval)
             if ti < 3 { return "just now" }
-            var string = ""
-            if ti < Date.minute { string = "\(lrint(ti)) seconds" }
-            else if abs(ti - Date.minute) <= 3.seconds { string = "a minute" }
-            else if ti < Date.hour { string = "\(lrint(ti / Date.minute)) minutes" }
-            else if abs(ti - Date.hour) <= (30.minutes) { string = "an hour" }
-            else if ti < Date.day { string = "\(lrint(ti / Date.hour)) hours" }
-            else if abs(ti - Date.day) <= (12.hours) { string = "a day" }
-            else if ti < Date.week { string = "\(lrint(ti / Date.day)) days" }
-            else { string = "\(lrint(ti / (Date.week))) weeks" }
+            var string = "About "
+            if ti < Date.minute { string += "\(lrint(ti)) seconds" }
+            else if abs(ti - Date.minute) <= 3.seconds { string += "a minute" }
+            else if ti < Date.hour { string += "\(lrint(ti / Date.minute)) minutes" }
+            else if abs(ti - Date.hour) <= (30.minutes) { string += "an hour" }
+            else if ti < Date.day { string += "\(lrint(ti / Date.hour)) hours" }
+            else if abs(ti - Date.day) <= (12.hours) { string += "a day" }
+            else if ti < Date.week { string += "\(lrint(ti / Date.day)) days" }
+            else { string += "\(lrint(ti / (Date.week))) weeks" }
             if let newTime = Date.sharedCalendar.date(byAdding: self, to: Date()) {
                 if newTime.isFuture { string += " from now" }
                 else if newTime.isPast { string += " ago" }
