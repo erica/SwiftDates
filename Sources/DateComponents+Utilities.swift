@@ -28,6 +28,23 @@ extension DateComponents {
     }
 }
 
+// For Frederic B
+// e.g. let dc = DateComponents(ti: 1.weeks + 1.days + 3.hours + 5.minutes + 4.seconds)
+extension DateComponents {
+    public init(ti: TimeInterval) {
+        var ti = floor(ti)
+        let seconds = lrint(ti.truncatingRemainder(dividingBy: 1.minutes))
+        ti -= seconds.seconds
+        let minutes = lrint(ti.truncatingRemainder(dividingBy: 1.hours) / 1.minutes)
+        ti -= minutes.minutes
+        let hours = lrint(ti.truncatingRemainder(dividingBy: 1.days) / 1.hours)
+        ti -= hours.hours
+        let days = lrint(ti / 1.days)
+        ti -= days.days
+        self.init(day: days, hour: hours, minute: minutes, second: seconds)
+    }
+}
+
 // Members
 extension DateComponents {
     /// Returns the Int-bearing Calendar.Component members
