@@ -40,7 +40,6 @@ extension DateComponents {
         let hours = lrint(ti.truncatingRemainder(dividingBy: 1.days) / 1.hours)
         ti -= hours.hours
         let days = lrint(ti / 1.days)
-        ti -= days.days
         self.init(day: days, hour: hours, minute: minutes, second: seconds)
     }
 }
