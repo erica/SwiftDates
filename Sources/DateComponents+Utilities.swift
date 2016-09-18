@@ -2,25 +2,129 @@ import Foundation
 
 // Acknowlegements in Date+Utilities.swift
 
-// Subscripting
+/// Components
+public extension Date {
+    /// Returns set of common date components
+    public static var commonComponents: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute, .second]
+    
+    /// Returns set of exhaustive date components
+    public static var allComponents: Set<Calendar.Component> = [.era, .year, .month, .day, .hour, .minute, .second, .weekday, .weekdayOrdinal, .quarter, .weekOfMonth, .weekOfYear, .yearForWeekOfYear, .nanosecond, .calendar, .timeZone]
+    
+    /// Returns set of MDY date components
+    public static var dateComponents: Set<Calendar.Component> = [.year, .month, .day]
+    
+    /// Returns set of HMS
+    public static var timeComponents: Set<Calendar.Component> = [.hour, .minute, .second, ]
+    
+    /// Returns set of MDYHMS components
+    public static var dateAndTimeComponents: Set<Calendar.Component> = [.hour, .minute, .second, .year, .month, .day]
+}
+
+/// Components from Dates 
+public extension Date {
+
+    /// Extracts of MDY components
+    var dateComponents: DateComponents {
+        return Date.sharedCalendar.dateComponents([.month, .day, .year], from: self)
+    }
+    
+    /// Extracts HMS components
+    var timeComponents: DateComponents {
+        return Date.sharedCalendar.dateComponents([.hour, .minute, .second], from: self)
+    }
+    
+    /// Extracts MDYHMS components
+    var dateAndTimeComponents: DateComponents {
+        return Date.sharedCalendar.dateComponents([.month, .day, .year, .hour, .minute, .second], from: self)
+    }
+    
+    /// Extracts common date components for date
+    public var components: DateComponents { return Date.sharedCalendar.dateComponents(Date.commonComponents, from: self) }
+    
+    /// Extracts all date components for date
+    public var allComponents: DateComponents { return Date.sharedCalendar.dateComponents(Date.allComponents, from: self) }
+}
+
+
+/// Alternative offset approach that constructs date components for offset duty
+/// I find this more verbose, less readable, less functional but your mileage may vary
 extension DateComponents {
-    /// Adds date component subscripting
+    /// Returns components populated by n years
+    public static func years(_ count: Int) -> DateComponents { return DateComponents(year: count) }
+    /// Returns components populated by n months
+    public static func months(_ count: Int) -> DateComponents { return DateComponents(month: count) }
+    /// Returns components populated by n days
+    public static func days(_ count: Int) -> DateComponents { return DateComponents(day: count) }
+    /// Returns components populated by n hours
+    public static func hours(_ count: Int) -> DateComponents { return DateComponents(hour: count) }
+    /// Returns components populated by n minutes
+    public static func minutes(_ count: Int) -> DateComponents { return DateComponents(minute: count) }
+    /// Returns components populated by n seconds
+    public static func seconds(_ count: Int) -> DateComponents { return DateComponents(second: count) }
+    /// Returns components populated by n nanoseconds
+    public static func nanoseconds(_ count: Int) -> DateComponents { return DateComponents(nanosecond: count) }
+}
+
+/// Date and Component Utility
+extension Date {
+    /// Offset a date by n calendar components. Can be functionally chained
+    /// For example:
+    ///
+    /// ```
+    /// let afterThreeDays = date.offset(.day, 3)
+    /// print(Date().offset(.day, 3).offset(.hour, 1).fullString)
+    /// ```
+    ///
+    /// Not all components or offsets are useful
+    public func offset(_ component: Calendar.Component, _ count: Int) -> Date {
+        var newComponent: DateComponents = DateComponents(second: 0)
+        switch component {
+        case .era: newComponent = DateComponents(era: count)
+        case .year: newComponent = DateComponents(year: count)
+        case .month: newComponent = DateComponents(month: count)
+        case .day: newComponent = DateComponents(day: count)
+        case .hour: newComponent = DateComponents(hour: count)
+        case .minute: newComponent = DateComponents(minute: count)
+        case .second: newComponent = DateComponents(second: count)
+        case .weekday: newComponent = DateComponents(weekday: count)
+        case .weekdayOrdinal: newComponent = DateComponents(weekdayOrdinal: count)
+        case .quarter: newComponent = DateComponents(quarter: count)
+        case .weekOfMonth: newComponent = DateComponents(weekOfMonth: count)
+        case .weekOfYear: newComponent = DateComponents(weekOfYear: count)
+        case .yearForWeekOfYear: newComponent = DateComponents(yearForWeekOfYear: count)
+        case .nanosecond: newComponent = DateComponents(nanosecond: count)
+            // These items complete the component vocabulary but cannot be used in this way
+            // case .calendar: newComponent = DateComponents(calendar: count)
+        // case .timeZone: newComponent = DateComponents(timeZone: count)
+        default: break
+        }
+        
+        // If offset is not possible, return unmodified date
+        return Date.sharedCalendar.date(byAdding: newComponent, to: self) ?? self
+    }
+}
+
+/// Subscripting
+extension DateComponents {
+    /// Introduces date component subscripting
+    /// This does not take into account any built-in errors
+    /// Where Int.max returned instead of nil
     public subscript(component: Calendar.Component) -> Int? {
         switch component {
-        case .era: return self.era
-        case .year: return self.year
-        case .month: return self.month
-        case .day: return self.day
-        case .hour: return self.hour
-        case .minute: return self.minute
-        case .second: return self.second
-        case .weekday: return self.weekday
-        case .weekdayOrdinal: return self.weekdayOrdinal
-        case .quarter: return self.quarter
-        case .weekOfMonth: return self.weekOfMonth
-        case .weekOfYear: return self.weekOfYear
-        case .yearForWeekOfYear: return self.yearForWeekOfYear
-        case .nanosecond: return self.nanosecond
+        case .era: return era
+        case .year: return year
+        case .month: return month
+        case .day: return day
+        case .hour: return hour
+        case .minute: return minute
+        case .second: return second
+        case .weekday: return weekday
+        case .weekdayOrdinal: return weekdayOrdinal
+        case .quarter: return quarter
+        case .weekOfMonth: return weekOfMonth
+        case .weekOfYear: return weekOfYear
+        case .yearForWeekOfYear: return yearForWeekOfYear
+        case .nanosecond: return nanosecond
         // case .calendar: return self.calendar
         // case .timeZone: return self.timeZone
         default: return nil
@@ -112,46 +216,6 @@ extension DateComponents {
     }
 }
 
-/// Component Math
-extension DateComponents {
-    
-    /// Add two date components together
-    public static func +(lhs: DateComponents, rhs: DateComponents) -> DateComponents {
-        var copy = DateComponents()
-        for component in lhs.members.union(rhs.members) {
-            var sum = 0
-            // Error workaround where instead of returning nil
-            // the values return Int.max
-            if let value = lhs.value(for: component),
-                value != Int.max, value != Int.min
-            { sum = sum + value }
-            if let value = rhs.value(for: component),
-                value != Int.max, value != Int.min
-            { sum = sum + value }
-            copy.setValue(sum, for: component)
-        }
-        return copy
-    }
-    
-    /// Subtract date components
-    public static func -(lhs: DateComponents, rhs: DateComponents) -> DateComponents {
-        var copy = DateComponents()
-        for component in lhs.members.union(rhs.members) {
-            var result = 0
-            // Error workaround where instead of returning nil
-            // the values return Int.max
-            if let value = lhs.value(for: component),
-                value != Int.max, value != Int.min
-            { result = result + value }
-            if let value = rhs.value(for: component),
-                value != Int.max, value != Int.min
-            { result = result - value }
-            copy.setValue(result, for: component)
-        }
-        return copy
-    }
-}
-
 /// Component Presentation
 extension DateComponents {
     /// Component Presentation Styles
@@ -176,11 +240,14 @@ extension DateComponents {
         approximate: Bool = false,
         style: PresentationStyle = .standard
         ) -> String {
-        let formatter = DateComponentsFormatter()
-        formatter.calendar = Date.sharedCalendar
-        formatter.unitsStyle = units
-        formatter.includesTimeRemainingPhrase = remaining
-        formatter.includesApproximationPhrase = approximate
+        
+        let formatter: DateComponentsFormatter = {
+            $0.calendar = Date.sharedCalendar
+            $0.unitsStyle = units
+            $0.includesTimeRemainingPhrase = remaining
+            $0.includesApproximationPhrase = approximate
+            return $0
+        }(DateComponentsFormatter())
         
         /// Caution: Use relative presentation only when all
         /// component signs are uniform. Use 'normalize' to
@@ -217,23 +284,4 @@ extension DateComponents {
             else { return "\(self)" }
         return string
     }
-}
-
-// Alternative offset approach that constructs date components for offset duty
-// I find this more verbose, less readable, less functional but your mileage may vary
-extension DateComponents {
-    /// Returns components populated by n years
-    public static func years(_ count: Int) -> DateComponents { return DateComponents(year: count) }
-    /// Returns components populated by n months
-    public static func months(_ count: Int) -> DateComponents { return DateComponents(month: count) }
-    /// Returns components populated by n days
-    public static func days(_ count: Int) -> DateComponents { return DateComponents(day: count) }
-    /// Returns components populated by n hours
-    public static func hours(_ count: Int) -> DateComponents { return DateComponents(hour: count) }
-    /// Returns components populated by n minutes
-    public static func minutes(_ count: Int) -> DateComponents { return DateComponents(minute: count) }
-    /// Returns components populated by n seconds
-    public static func seconds(_ count: Int) -> DateComponents { return DateComponents(second: count) }
-    /// Returns components populated by n nanoseconds
-    public static func nanoseconds(_ count: Int) -> DateComponents { return DateComponents(nanosecond: count) }
 }
