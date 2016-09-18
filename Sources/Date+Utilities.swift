@@ -17,7 +17,7 @@ extension Date {
 // Some of these are entirely pointless but I have included all components
 public extension Date {
     /// Returns the current time
-    public var now: Date { return Date() }
+    public static var now: Date { return Date() }
     /// Returns instance's year component
     public var year: Int { return Date.sharedCalendar.component(.year, from: self) }
     /// Returns instance's month component
@@ -214,7 +214,7 @@ extension Date {
     /// ```swift
     /// print((Date() + DateComponents.days(3) + DateComponents.hours(1)).fullString)
     /// ```
-    static public func +(lhs: Date, rhs: DateComponents) -> Date {
+    public static func +(lhs: Date, rhs: DateComponents) -> Date {
         return Date.sharedCalendar.date(byAdding: rhs, to: lhs)! // yes force unwrap. sue me.
     }
 }
@@ -238,7 +238,7 @@ extension Date {
 // Date distances
 public extension Date {
     /// Returns the time interval between two dates
-    static public func interval(_ date1: Date, _ date2: Date) -> TimeInterval {
+    public static func interval(_ date1: Date, _ date2: Date) -> TimeInterval {
         return date2.interval - date1.interval
     }
     
@@ -256,7 +256,7 @@ public extension Date {
     /// Date.distance(date1, to: date2, component: .day) // 72
     /// ```
     /// - Warning: Returns 0 for bad components rather than crashing
-    static public func distance(_ date1: Date, to date2: Date, component: Calendar.Component) -> Int {
+    public static func distance(_ date1: Date, to date2: Date, component: Calendar.Component) -> Int {
         return Date.sharedCalendar.dateComponents([component], from: date1, to: date2)[component] ?? 0
     }
     
