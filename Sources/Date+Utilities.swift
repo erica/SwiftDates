@@ -238,6 +238,31 @@ extension Date {
     /// Returns true if date likely falls within the previous week of year
     public var isLastWeek: Bool { return Date.sameWeek(self, Date.lastWeek) }
     
+    /// Returns the start of month for the user's preferred calendar
+    public static var thisMonth: Date {
+        let components = Date().components
+        let themonth = DateComponents(year: components.year, month: components.month)
+        // If offset is not possible, return unmodified date
+        return Date.sharedCalendar.date(from: themonth) ?? Date()
+    }
+    /// Returns the start of next year for the user's preferred calendar
+    public static var nextMonth: Date { return thisMonth.offset(.month, 1) }
+    /// Returns the start of previous year for the user's preferred calendar
+    public static var lastMonth: Date { return thisMonth.offset(.month, -1) }
+    
+    /// Returns true if two dates share the same month component
+    public static func sameMonth(_ date1: Date, _ date2: Date) -> Bool {
+        return (date1.allComponents.year == date2.allComponents.year) &&
+            (date1.allComponents.month == date2.allComponents.month)
+    }
+    
+    /// Returns true if date falls within this month for the user's preferred calendar
+    public var isThisMonth: Bool { return Date.sameMonth(self, Date.thisMonth) }
+    /// Returns true if date falls within next month for the user's preferred calendar
+    public var isNextMonth: Bool { return Date.sameMonth(self, Date.nextMonth) }
+    /// Returns true if date falls within previous month for the user's preferred calendar
+    public var isLastMonth: Bool { return Date.sameMonth(self, Date.nextMonth) }
+    
     /// Returns the start of year for the user's preferred calendar
     public static var thisYear: Date {
         let components = Date().components

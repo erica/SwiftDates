@@ -49,7 +49,7 @@ extension Date {
 extension DateComponents {
     
     /// Add two date components together
-    public static func +(lhs: DateComponents, rhs: DateComponents) -> DateComponents {
+    public static func + (lhs: DateComponents, rhs: DateComponents) -> DateComponents {
         var copy = DateComponents()
         for component in lhs.members.union(rhs.members) {
             var sum = 0
@@ -67,7 +67,7 @@ extension DateComponents {
     }
     
     /// Subtract date components
-    public static func -(lhs: DateComponents, rhs: DateComponents) -> DateComponents {
+    public static func - (lhs: DateComponents, rhs: DateComponents) -> DateComponents {
         var copy = DateComponents()
         for component in lhs.members.union(rhs.members) {
             var result = 0
