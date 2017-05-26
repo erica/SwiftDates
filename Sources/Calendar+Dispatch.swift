@@ -3,22 +3,40 @@ import Foundation
 // If I have done this right, this specific file has no
 // dependencies other than Foundation
 
-extension Date {
-    /// returns DispatchTime after n floating point seconds
-    public func dispatchTime(after seconds: Double) -> DispatchTime {
-        let delay = Double(NSEC_PER_SEC) * seconds
-        let nSec = DispatchTime.now().rawValue + UInt64(delay)
-        return DispatchTime(uptimeNanoseconds: nSec)
+
+extension DispatchTimeInterval {
+    /// Returns a dispatch time interval in nanoseconds from a
+    /// `Double` number of seconds
+    ///
+    /// ```
+    /// let timeInEightAndHalf: DispatchTime = .now() + .seconds(8.5)
+    /// ```
+    ///
+    /// - Reference: http://ericasadun.com/2017/05/23/5-easy-dispatch-tricks/
+    public static func seconds(_ amount: Double) -> DispatchTimeInterval {
+        let delay = Double(NSEC_PER_SEC) * amount
+        return DispatchTimeInterval.nanoseconds(Int(delay))
+    }
+}
+
+extension DispatchTime {
+    /// Returns a dispatch time offset by `duration` seconds from `now`
+    ///
+    /// ```
+    /// DispatchQueue.main.asyncAfter(deadline: .secondsFromNow($0)) {...}
+    /// ```
+    ///
+    /// - Reference: http://ericasadun.com/2017/05/23/5-easy-dispatch-tricks/
+    public static func secondsFromNow(_ duration: Double) -> DispatchTime {
+        return DispatchTime.now() + duration
     }
 }
 
 extension DateComponents {
-    /// returns DispatchTime component offset from now
+    /// Returns a DispatchTime that's been component offset from now
     public var dispatchTime: DispatchTime? {
         guard let offsetDate = Calendar.autoupdatingCurrent.date(byAdding: self, to: Date()) else { return nil }
         let seconds = offsetDate.timeIntervalSinceNow
-        let delay = Double(NSEC_PER_SEC) * seconds
-        let nSec = DispatchTime.now().rawValue + UInt64(delay)
-        return DispatchTime(uptimeNanoseconds: nSec)
+        return DispatchTime.now() + seconds
     }
 }

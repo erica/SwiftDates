@@ -4,27 +4,35 @@ import Foundation
 
 // Formatters and Strings
 public extension Date {
-    /// Returns an ISO 8601 formatter
-    public static var iso8601Formatter: DateFormatter = {
-        $0.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        $0.locale = Locale(identifier: "en_US_POSIX")
-        return $0 }(DateFormatter())
+    /// Returns an ISO 8601 formatter set to locale
+    /// Thanks, Daniel Marques, https://github.com/erica/SwiftDates/issues/2
+    public static var iso8601Formatter: ISO8601DateFormatter = {
+        $0.timeZone = TimeZone.autoupdatingCurrent
+        return $0 }(ISO8601DateFormatter())
     /// Returns a short style date formatter
-    public static var shortDateFormatter: DateFormatter = { $0.dateStyle = .short; return $0 }(DateFormatter())
+    public static var shortDateFormatter: DateFormatter = {
+        $0.dateStyle = .short; return $0 }(DateFormatter())
     /// Returns a medium style date formatter
-    public static var mediumDateFormatter: DateFormatter = { $0.dateStyle = .medium; return $0 }(DateFormatter())
+    public static var mediumDateFormatter: DateFormatter = {
+        $0.dateStyle = .medium; return $0 }(DateFormatter())
     /// Returns a long style date formatter
-    public static var longDateFormatter: DateFormatter = { $0.dateStyle = .long; return $0 }(DateFormatter())
+    public static var longDateFormatter: DateFormatter = {
+        $0.dateStyle = .long; return $0 }(DateFormatter())
     /// Returns a full style date formatter
-    public static var fullDateFormatter: DateFormatter = { $0.dateStyle = .full; return $0 }(DateFormatter())
+    public static var fullDateFormatter: DateFormatter = {
+        $0.dateStyle = .full; return $0 }(DateFormatter())
     /// Returns a short style time formatter
-    public static var shortTimeFormatter: DateFormatter = { $0.timeStyle = .short; return $0 }(DateFormatter())
+    public static var shortTimeFormatter: DateFormatter = {
+        $0.timeStyle = .short; return $0 }(DateFormatter())
     /// Returns a medium style time formatter
-    public static var mediumTimeFormatter: DateFormatter = { $0.timeStyle = .medium; return $0 }(DateFormatter())
+    public static var mediumTimeFormatter: DateFormatter = {
+        $0.timeStyle = .medium; return $0 }(DateFormatter())
     /// Returns a long style time formatter
-    public static var longTimeFormatter: DateFormatter = { $0.timeStyle = .long; return $0 }(DateFormatter())
+    public static var longTimeFormatter: DateFormatter = {
+        $0.timeStyle = .long; return $0 }(DateFormatter())
     /// Returns a full style time formatter
-    public static var fullTimeFormatter: DateFormatter = { $0.timeStyle = .full; return $0 }(DateFormatter())
+    public static var fullTimeFormatter: DateFormatter = {
+        $0.timeStyle = .full; return $0 }(DateFormatter())
     
     /// Represents date as ISO8601 string
     public var iso8601String: String { return Date.iso8601Formatter.string(from: self) }

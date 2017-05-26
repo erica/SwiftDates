@@ -1,6 +1,11 @@
 import Foundation
 
-// Acknowlegements in Date+Utilities.swift
+/*
+ Note: These items are meant for simple utility. Pay attention
+ to the cautions regarding Calendar.Component use.
+ 
+ Acknowlegements in Date+Utilities.swift
+ */
 
 /// Standard interval reference
 /// Not meant to replace `offset(_: Calendar.Component, _: Int)` to offset dates
