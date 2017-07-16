@@ -20,9 +20,9 @@ public extension Date {
     public static var dateAndTimeComponents: Set<Calendar.Component> = [.hour, .minute, .second, .year, .month, .day]
 }
 
-/// Components from Dates 
+/// Components from Dates
 public extension Date {
-
+    
     /// Extracts of MDY components
     var dateComponents: DateComponents {
         return Date.sharedCalendar.dateComponents([.month, .day, .year], from: self)
@@ -125,7 +125,7 @@ extension DateComponents {
         case .weekOfYear: return weekOfYear
         case .yearForWeekOfYear: return yearForWeekOfYear
         case .nanosecond: return nanosecond
-        // case .calendar: return self.calendar
+            // case .calendar: return self.calendar
         // case .timeZone: return self.timeZone
         default: return nil
         }
@@ -133,18 +133,17 @@ extension DateComponents {
 }
 
 // For Frederic B
-// e.g. let dc = DateComponents(ti: 1.weeks + 1.days + 3.hours + 5.minutes + 4.seconds)
+// e.g.
+//    let dc = DateComponents(ti: 1.weekInteval + 1.dayInterval
+//          + 3.hourInterval + 5.minuteInterval + 4.secondInterval)
 extension DateComponents {
     public init(ti: TimeInterval) {
-        var ti = floor(ti)
-        let seconds = lrint(ti.truncatingRemainder(dividingBy: 1.minutes))
-        ti -= seconds.seconds
-        let minutes = lrint(ti.truncatingRemainder(dividingBy: 1.hours) / 1.minutes)
-        ti -= minutes.minutes
-        let hours = lrint(ti.truncatingRemainder(dividingBy: 1.days) / 1.hours)
-        ti -= hours.hours
-        let days = lrint(ti / 1.days)
-        self.init(day: days, hour: hours, minute: minutes, second: seconds)
+        let referenceDate = Date(timeIntervalSinceReferenceDate: 0)
+        let offsetDate = Date(timeIntervalSinceReferenceDate: ti)
+        self = Date.sharedCalendar
+            .dateComponents(Date.commonComponents,
+                            from: referenceDate,
+                            to: offsetDate)
     }
 }
 
@@ -251,7 +250,7 @@ extension DateComponents {
         
         /// Caution: Use relative presentation only when all
         /// component signs are uniform. Use 'normalize' to
-        /// normalize the component.        
+        /// normalize the component.
         if style == .relative {
             guard var string = formatter.string(from: self) else { return "\(self)" }
             if let newTime = Date.sharedCalendar.date(byAdding: self, to: Date()) {
@@ -265,14 +264,14 @@ extension DateComponents {
             let ti = abs(self.timeInterval)
             if ti < 3 { return "just now" }
             var string = "About "
-            if ti < Date.minute { string += "\(lrint(ti)) seconds" }
-            else if abs(ti - Date.minute) <= 3.seconds { string += "a minute" }
-            else if ti < Date.hour { string += "\(lrint(ti / Date.minute)) minutes" }
-            else if abs(ti - Date.hour) <= (30.minutes) { string += "an hour" }
-            else if ti < Date.day { string += "\(lrint(ti / Date.hour)) hours" }
-            else if abs(ti - Date.day) <= (12.hours) { string += "a day" }
-            else if ti < Date.week { string += "\(lrint(ti / Date.day)) days" }
-            else { string += "\(lrint(ti / (Date.week))) weeks" }
+            if ti < Date.minuteInterval { string += "\(lrint(ti)) seconds" }
+            else if abs(ti - Date.minuteInterval) <= 3.secondInterval { string += "a minute" }
+            else if ti < Date.hourInterval { string += "\(lrint(ti / Date.minuteInterval)) minutes" }
+            else if abs(ti - Date.hourInterval) <= (30.minuteInterval) { string += "an hour" }
+            else if ti < Date.dayInterval { string += "\(lrint(ti / Date.hourInterval)) hours" }
+            else if abs(ti - Date.dayInterval) <= (12.hourInterval) { string += "a day" }
+            else if ti < Date.weekInterval { string += "\(lrint(ti / Date.dayInterval)) days" }
+            else { string += "\(lrint(ti / (Date.weekInterval))) weeks" }
             if let newTime = Date.sharedCalendar.date(byAdding: self, to: Date()) {
                 if newTime.isFuture { string += " from now" }
                 else if newTime.isPast { string += " ago" }
@@ -285,3 +284,4 @@ extension DateComponents {
         return string
     }
 }
+
