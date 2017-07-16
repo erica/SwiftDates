@@ -89,3 +89,14 @@ extension DateComponents {
         return copy
     }
 }
+
+
+extension Date {
+    /// Returns the common components separating the
+    /// the date on the lhs from the date on the rhs.
+    /// For example `laterDate - earlierDate`
+    public static func - (lhs: Date, rhs: Date) -> DateComponents {
+        return Date.sharedCalendar.dateComponents(commonComponents, from: rhs, to: lhs)
+    }
+}
+
