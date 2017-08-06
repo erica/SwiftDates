@@ -29,11 +29,11 @@ public extension Date {
     public var month: Int { return Date.sharedCalendar.component(.month, from: self) }
     /// Returns instance's day component
     public var day: Int { return Date.sharedCalendar.component(.day, from: self) }
-    /// Returns instance's hour component
     
     
     // MARK: HMS
-    
+
+    /// Returns instance's hour component
     public var hour: Int { return Date.sharedCalendar.component(.hour, from: self) }
     /// Returns instance's minute component
     public var minute: Int { return Date.sharedCalendar.component(.minute, from: self) }
