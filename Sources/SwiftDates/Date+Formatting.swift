@@ -6,6 +6,9 @@ import Foundation
 public extension Date {
     /// Returns an ISO 8601 formatter set to locale
     /// Thanks, Daniel Marques, https://github.com/erica/SwiftDates/issues/2
+    @available(watchOS 3.0, *)
+    @available(tvOS 10.0, *)
+    @available(iOS 10.0, *)
     @available(OSX 10.12, *)
     static var iso8601Formatter: ISO8601DateFormatter = {
         $0.timeZone = TimeZone.autoupdatingCurrent
@@ -36,6 +39,9 @@ public extension Date {
         $0.timeStyle = .full; return $0 }(DateFormatter())
     
     /// Represents date as ISO8601 string
+    @available(watchOS 3.0, *)
+    @available(tvOS 10.0, *)
+    @available(iOS 10.0, *)
     @available(OSX 10.12, *)
     public var iso8601String: String { return Date.iso8601Formatter.string(from: self) }
     
